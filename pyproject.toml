@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ftagent-lite"
+version = "1.0.0"
+description = "Lightweight open-source DDoS traffic monitor — stdout output, no account required"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Flowtriq", email = "hello@flowtriq.com" }]
+keywords = ["ddos", "network", "traffic", "monitor", "security", "ids"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Networking :: Monitoring",
+]
+requires-python = ">=3.7"
+dependencies = []
+
+[project.optional-dependencies]
+full = ["scapy>=2.4.5", "psutil>=5.9.0"]
+scapy = ["scapy>=2.4.5"]
+psutil = ["psutil>=5.9.0"]
+
+[project.scripts]
+ftagent-lite = "ftagent_lite:main"
+
+[project.urls]
+Homepage = "https://flowtriq.com"
+Repository = "https://github.com/flowtriq/ftagent-lite"
+"Bug Tracker" = "https://github.com/flowtriq/ftagent-lite/issues"
+"Full Version" = "https://flowtriq.com"
