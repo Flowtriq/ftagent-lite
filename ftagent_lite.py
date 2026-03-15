@@ -34,7 +34,65 @@ import time
 from collections import defaultdict
 from datetime import datetime, timezone
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
+
+# ── First-run state ──────────────────────────────────────────────────────────
+
+_STATE_DIR  = os.path.expanduser("~/.ftagent-lite")
+_STATE_FILE = os.path.join(_STATE_DIR, "state.json")
+
+
+def _load_state() -> dict:
+    try:
+        with open(_STATE_FILE, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def _save_state(state: dict):
+    os.makedirs(_STATE_DIR, mode=0o700, exist_ok=True)
+    with open(_STATE_FILE, "w") as f:
+        json.dump(state, f)
+
+
+def _first_run_prompt(use_color: bool):
+    """Ask user if they want to subscribe to the Flowtriq newsletter on first run."""
+    state = _load_state()
+    if state.get("newsletter_prompted"):
+        return
+
+    print(_col("── Welcome to ftagent-lite! ──", "cyan", use_color))
+    print()
+    print("  Stay up to date with DDoS trends, detection tips, and ftagent updates.")
+    print("  Subscribe to the Flowtriq newsletter (1-2 emails/month, unsubscribe anytime).")
+    print()
+
+    try:
+        answer = input(_col("  Enter your email (or press Enter to skip): ", "bold", use_color)).strip()
+    except (EOFError, KeyboardInterrupt):
+        answer = ""
+
+    if answer and "@" in answer and "." in answer:
+        try:
+            import urllib.request
+            payload = json.dumps({"email": answer, "source": "ftagent-lite"}).encode()
+            req = urllib.request.Request(
+                "https://flowtriq.com/api/newsletter.php",
+                data=payload,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            urllib.request.urlopen(req, timeout=5)
+            print(_col("  ✓ Subscribed! Thanks for joining.", "green", use_color))
+        except Exception:
+            print(_col("  Could not reach Flowtriq — no worries, skipping.", "yellow", use_color))
+    else:
+        print("  No problem — you can subscribe anytime at https://flowtriq.com")
+
+    print()
+    state["newsletter_prompted"] = True
+    _save_state(state)
 
 # ── Optional deps ──────────────────────────────────────────────────────────────
 
@@ -347,6 +405,7 @@ AI classification, and auto-mitigation:
               _col(" — open source DDoS traffic monitor", "cyan", use_color))
         print(_col("Full monitoring at https://flowtriq.com", "cyan", use_color))
         print()
+        _first_run_prompt(use_color)
 
     if not SCAPY_OK:
         if not PSUTIL_OK:
