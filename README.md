@@ -4,7 +4,7 @@
 
 `ftagent-lite` is a lightweight network traffic monitor that detects DDoS attack patterns in real-time and prints structured stats to stdout. No API key. No account. No cloud.
 
-It's the open-source sibling of the [Flowtriq](https://flowtriq.com) detection agent — great for quick diagnostics, CI pipelines, or building your own tooling on top.
+It's the open-source sibling of the [Flowtriq](https://flowtriq.com) detection agent. It's great for quick diagnostics, CI pipelines, or building your own tooling on top.
 
 ---
 
@@ -110,7 +110,7 @@ sudo python3 ftagent_lite.py --json >> /var/log/traffic.jsonl
 | ≥ 2× threshold | HIGH |
 | ≥ 5× threshold | CRITICAL |
 
-For production DDoS detection with automatic alerting (Discord, Slack, PagerDuty, Teams, Telegram, DataDog, Prometheus, and more), PCAP capture, AI classification, escalation policies, and auto-mitigation (Cloudflare WAF, iptables, DigitalOcean, Vultr) — see **[Flowtriq](https://flowtriq.com)**.
+For production DDoS detection with automatic alerting (Discord, Slack, PagerDuty, Teams, Telegram, DataDog, Prometheus, and more), PCAP capture, AI classification, escalation policies, and auto-mitigation (Cloudflare WAF, iptables, DigitalOcean, Vultr). See **[Flowtriq](https://flowtriq.com)**.
 
 ---
 
