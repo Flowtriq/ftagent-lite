@@ -26,6 +26,7 @@ Version: 1.0.0
 """
 
 import argparse
+import heapq
 import json
 import os
 import signal
@@ -34,6 +35,7 @@ import threading
 import time
 from collections import defaultdict
 from datetime import datetime, timezone
+from itertools import islice
 
 VERSION = "1.1.1"
 
@@ -171,7 +173,8 @@ _counters = {
     "src_ips":     set(),
     "dst_ports":   defaultdict(int),
     "src_ports":   defaultdict(int),
-    "pkt_sizes":   [],
+    "pkt_size_sum":   0,   # running sum (avoids unbounded list)
+    "pkt_size_count": 0,
 }
 
 _stats_history = []   # list of interval snapshots
@@ -198,7 +201,8 @@ def _handle_packet(pkt):
         _counters["pps"] += 1
         pkt_len = len(pkt)
         _counters["bps"] += pkt_len
-        _counters["pkt_sizes"].append(pkt_len)
+        _counters["pkt_size_sum"] += pkt_len
+        _counters["pkt_size_count"] += 1
         _counters["src_ips"].add(pkt[IP].src)
 
         if TCP in pkt:
@@ -219,6 +223,7 @@ def _handle_packet(pkt):
 
 def _collect_and_reset(interval: float) -> dict:
     with _lock:
+        pkt_count = _counters["pkt_size_count"]
         snap = {
             "pps":       int(_counters["pps"] / interval),
             "bps":       int(_counters["bps"] / interval),
@@ -227,9 +232,9 @@ def _collect_and_reset(interval: float) -> dict:
             "icmp":      _counters["icmp"],
             "other":     _counters["other"],
             "src_ip_count": len(_counters["src_ips"]),
-            "top_src_ips":  sorted(list(_counters["src_ips"]))[:10],
-            "top_dst_ports": sorted(_counters["dst_ports"].items(), key=lambda x: x[1], reverse=True)[:5],
-            "avg_pkt_size":  int(sum(_counters["pkt_sizes"]) / len(_counters["pkt_sizes"])) if _counters["pkt_sizes"] else 0,
+            "top_src_ips":  list(islice(_counters["src_ips"], 10)),
+            "top_dst_ports": heapq.nlargest(5, _counters["dst_ports"].items(), key=lambda x: x[1]),
+            "avg_pkt_size":  int(_counters["pkt_size_sum"] / pkt_count) if pkt_count else 0,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         total_proto = snap["tcp"] + snap["udp"] + snap["icmp"] + snap["other"]
@@ -247,7 +252,8 @@ def _collect_and_reset(interval: float) -> dict:
         _counters["src_ips"]   = set()
         _counters["dst_ports"] = defaultdict(int)
         _counters["src_ports"] = defaultdict(int)
-        _counters["pkt_sizes"] = []
+        _counters["pkt_size_sum"]   = 0
+        _counters["pkt_size_count"] = 0
     return snap
 
 
