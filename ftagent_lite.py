@@ -7,7 +7,8 @@ Monitors network traffic in real-time and prints structured stats to stdout.
 No API key required. No cloud dependency.
 
 For full incident management, alerting, PCAP capture, AI classification,
-and team notifications — see Flowtriq: https://flowtriq.com
+Layer 7 HTTP flood detection, and team notifications — see Flowtriq:
+https://flowtriq.com
 
 Usage:
     sudo python3 ftagent_lite.py
@@ -34,7 +35,7 @@ import time
 from collections import defaultdict
 from datetime import datetime, timezone
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 # ── First-run state ──────────────────────────────────────────────────────────
 
@@ -93,6 +94,53 @@ def _first_run_prompt(use_color: bool):
     print()
     state["newsletter_prompted"] = True
     _save_state(state)
+
+# ── Update checker ─────────────────────────────────────────────────────────────
+
+def _check_for_updates():
+    """Check GitHub releases Atom feed for a newer version of ftagent-lite."""
+    try:
+        import urllib.request
+        import xml.etree.ElementTree as ET
+
+        url = "https://github.com/Flowtriq/ftagent-lite/releases.atom"
+        req = urllib.request.Request(url, headers={"User-Agent": f"ftagent-lite/{VERSION}"})
+        resp = urllib.request.urlopen(req, timeout=10)
+        data = resp.read()
+        root = ET.fromstring(data)
+
+        ns = {"atom": "http://www.w3.org/2005/Atom"}
+        entries = root.findall("atom:entry", ns)
+        if not entries:
+            return
+
+        title = entries[0].find("atom:title", ns)
+        if title is None or title.text is None:
+            return
+
+        latest = title.text.strip().lstrip("vV")
+        current = VERSION.lstrip("vV")
+
+        if latest != current:
+            def _ver_tuple(v):
+                parts = []
+                for p in v.split("."):
+                    try:
+                        parts.append(int(p))
+                    except ValueError:
+                        parts.append(0)
+                return tuple(parts)
+
+            if _ver_tuple(latest) > _ver_tuple(current):
+                print(
+                    f"WARNING: A newer version of ftagent-lite is available: "
+                    f"{latest} (current: {VERSION}). "
+                    f"Run: pip install --upgrade ftagent-lite",
+                    file=sys.stderr,
+                )
+    except Exception:
+        pass
+
 
 # ── Optional deps ──────────────────────────────────────────────────────────────
 
@@ -405,6 +453,7 @@ AI classification, and auto-mitigation:
               _col(" — open source DDoS traffic monitor", "cyan", use_color))
         print(_col("Full monitoring at https://flowtriq.com", "cyan", use_color))
         print()
+        _check_for_updates()
         _first_run_prompt(use_color)
 
     if not SCAPY_OK:
