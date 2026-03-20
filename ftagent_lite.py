@@ -37,7 +37,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from itertools import islice
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 # ── First-run state ──────────────────────────────────────────────────────────
 
@@ -177,7 +177,8 @@ _counters = {
     "pkt_size_count": 0,
 }
 
-_stats_history = []   # list of interval snapshots
+_stats_history = []   # list of interval snapshots (capped at 10800 = ~6h at 2s intervals)
+_STATS_HISTORY_MAX = 10800
 _alert_active  = False
 _alert_start   = None
 
@@ -402,6 +403,8 @@ def _psutil_loop(interface: str, interval: float, threshold: int,
                 "_note": "Protocol breakdown not available without scapy",
             }
             _stats_history.append(snap)
+            if len(_stats_history) > _STATS_HISTORY_MAX:
+                _stats_history[:] = _stats_history[-_STATS_HISTORY_MAX:]
             if json_out:
                 print(json.dumps(snap), flush=True)
             elif watch:
@@ -416,6 +419,7 @@ def _psutil_loop(interface: str, interval: float, threshold: int,
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
+    global _running
     parser = argparse.ArgumentParser(
         description="ftagent-lite: lightweight DDoS traffic monitor (open source)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -486,6 +490,8 @@ AI classification, and auto-mitigation:
             time.sleep(args.interval)
             snap = _collect_and_reset(args.interval)
             _stats_history.append(snap)
+            if len(_stats_history) > _STATS_HISTORY_MAX:
+                _stats_history[:] = _stats_history[-_STATS_HISTORY_MAX:]
 
             if args.json:
                 print(json.dumps(snap), flush=True)
@@ -494,7 +500,7 @@ AI classification, and auto-mitigation:
             else:
                 _print_human(snap, args.threshold, use_color)
     finally:
-        _running_ref = False  # signal sniff thread
+        _running = False  # signal sniff thread
 
     # Summary
     if not args.json and _stats_history:
