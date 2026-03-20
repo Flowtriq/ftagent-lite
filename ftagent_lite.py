@@ -37,7 +37,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from itertools import islice
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 # ── First-run state ──────────────────────────────────────────────────────────
 
