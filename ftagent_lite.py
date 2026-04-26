@@ -103,12 +103,15 @@ def _check_for_updates():
     """Check GitHub releases Atom feed for a newer version of ftagent-lite."""
     try:
         import urllib.request
-        import xml.etree.ElementTree as ET
+        try:
+            import defusedxml.ElementTree as ET
+        except ImportError:
+            import xml.etree.ElementTree as ET
 
         url = "https://github.com/Flowtriq/ftagent-lite/releases.atom"
         req = urllib.request.Request(url, headers={"User-Agent": f"ftagent-lite/{VERSION}"})
         resp = urllib.request.urlopen(req, timeout=10)
-        data = resp.read()
+        data = resp.read(1_000_000)  # cap at 1 MB to prevent XML bomb / memory exhaustion
         root = ET.fromstring(data)
 
         ns = {"atom": "http://www.w3.org/2005/Atom"}
@@ -204,7 +207,8 @@ def _handle_packet(pkt):
         _counters["bps"] += pkt_len
         _counters["pkt_size_sum"] += pkt_len
         _counters["pkt_size_count"] += 1
-        _counters["src_ips"].add(pkt[IP].src)
+        if len(_counters["src_ips"]) < 100_000:
+            _counters["src_ips"].add(pkt[IP].src)
 
         if TCP in pkt:
             _counters["tcp"] += 1
