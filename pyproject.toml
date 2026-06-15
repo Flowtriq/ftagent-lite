@@ -5,17 +5,20 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ftagent-lite"
 version = "1.1.3"
-description = "Lightweight open-source DDoS traffic monitor — stdout output, no account required"
+description = "Real-time DDoS traffic monitor. Single file, stdout output, no account required."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Flowtriq", email = "hello@flowtriq.com" }]
-keywords = ["ddos", "network", "traffic", "monitor", "security", "ids"]
+keywords = ["ddos", "ddos-detection", "ddos-protection", "network-monitoring", "traffic-analysis", "packet-capture", "security", "ids", "intrusion-detection", "sysadmin"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -23,8 +26,11 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
     "Topic :: System :: Monitoring",
     "Topic :: System :: Networking :: Monitoring",
+    "Topic :: System :: Systems Administration",
 ]
 requires-python = ">=3.7"
 dependencies = []
@@ -42,3 +48,5 @@ Homepage = "https://flowtriq.com"
 Repository = "https://github.com/flowtriq/ftagent-lite"
 "Bug Tracker" = "https://github.com/flowtriq/ftagent-lite/issues"
 "Full Version" = "https://flowtriq.com"
+Documentation = "https://github.com/Flowtriq/ftagent-lite#readme"
+Changelog = "https://github.com/Flowtriq/ftagent-lite/releases"

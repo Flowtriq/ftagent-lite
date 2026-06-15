@@ -362,7 +362,7 @@ def _print_watch(snap: dict, threshold: int, color: bool, interface: str):
             print(f"  Top attackers: {', '.join(snap['top_src_ips'][:5])}")
         print()
         print(_col("  Get full alerting, PCAP capture, and auto-mitigation:", "yellow", color))
-        print(_col("  https://flowtriq.com  (7-day free trial)", "yellow", color))
+        print(_col("  https://flowtriq.com  (14-day free trial)", "yellow", color))
 
     print(_col("=" * 60, "cyan", color))
     print("  Press Ctrl+C to stop")
@@ -436,7 +436,7 @@ Examples:
 
 For full DDoS detection with alerting, PCAP capture, team notifications,
 AI classification, and auto-mitigation:
-  https://flowtriq.com  (7-day free trial, no credit card)
+  https://flowtriq.com  (14-day free trial, no credit card)
 """,
     )
     parser.add_argument("--interface", "-i", default="any",
