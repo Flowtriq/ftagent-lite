@@ -12,18 +12,15 @@
 
 ---
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Flowtriq/ftagent-lite/main/.github/demo.gif" alt="ftagent-lite demo" width="700">
+</p>
+
+---
+
 Drop it on any Linux server and see packets per second, bandwidth, protocol breakdown, source IP cardinality, and attack severity in real time. Pipe JSON to your own tooling or watch the live dashboard in your terminal.
 
-```
-2026-06-14 03:12:07 [HIGH]
-  Traffic : 47.8K pps  1.7 Gbps
-  Proto   : TCP 3.2%  UDP 94.1%  ICMP 0.4%
-  Sources : 8,421 unique IPs  |  Avg pkt: 38 bytes
-  Top dst : :11211(31042)  :53(12831)  :80(3201)
-  Top src : 203.0.113.5  198.51.100.8  192.0.2.99
-```
-
-> For a full TUI dashboard with charts, filters, and multi-node views, see [NetHawk](https://github.com/Flowtriq/nethawk).
+> For a full TUI dashboard with real-time charts and sparklines, see [NetHawk](https://github.com/Flowtriq/nethawk).
 
 ---
 
