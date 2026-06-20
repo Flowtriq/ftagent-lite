@@ -1,10 +1,16 @@
-# ftagent-lite
+<p align="center">
+  <h1 align="center">ftagent-lite</h1>
+  <p align="center">Real-time DDoS traffic monitor. Single file. No account. No cloud.</p>
+</p>
 
-[![PyPI](https://img.shields.io/pypi/v/ftagent-lite)](https://pypi.org/project/ftagent-lite/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python 3.7+](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://pypi.org/project/ftagent-lite/)
+<p align="center">
+  <a href="https://pypi.org/project/ftagent-lite/"><img src="https://img.shields.io/pypi/v/ftagent-lite?color=blue" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/ftagent-lite/"><img src="https://img.shields.io/pypi/pyversions/ftagent-lite" alt="Python versions"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Flowtriq/ftagent-lite" alt="License"></a>
+  <a href="https://pypi.org/project/ftagent-lite/"><img src="https://img.shields.io/pypi/dm/ftagent-lite?color=green" alt="Downloads"></a>
+</p>
 
-**Real-time DDoS traffic monitor that prints to stdout. Single file. No account. No cloud.**
+---
 
 Drop it on any Linux server and see packets per second, bandwidth, protocol breakdown, source IP cardinality, and attack severity in real time. Pipe JSON to your own tooling or watch the live dashboard in your terminal.
 
@@ -17,21 +23,22 @@ Drop it on any Linux server and see packets per second, bandwidth, protocol brea
   Top src : 203.0.113.5  198.51.100.8  192.0.2.99
 ```
 
+> For a full TUI dashboard with charts, filters, and multi-node views, see [NetHawk](https://github.com/Flowtriq/nethawk).
+
 ---
 
-## Install
+## Quick Start
+
+### Install from PyPI
 
 ```bash
 pip install ftagent-lite[full]
-```
-
-That pulls in `scapy` (packet capture + protocol parsing) and `psutil` (fallback). Then:
-
-```bash
 sudo ftagent-lite
 ```
 
-Or run the single file directly without installing:
+The `[full]` extra pulls in `scapy` (packet capture and protocol parsing) and `psutil` (fallback counters).
+
+### Or run the single file directly
 
 ```bash
 curl -O https://raw.githubusercontent.com/Flowtriq/ftagent-lite/main/ftagent_lite.py
@@ -39,26 +46,26 @@ pip install scapy psutil
 sudo python3 ftagent_lite.py
 ```
 
-Root/sudo is required for raw socket capture.
+Root / sudo is required for raw socket capture.
 
 ---
 
-## What it does
+## What It Does
 
 **Two things, well:**
 
-1. **Traffic monitoring** -- PPS, bandwidth (Gbps/Mbps), TCP/UDP/ICMP breakdown, unique source IPs, top destination ports, average packet size. Every interval, printed to stdout.
+1. **Traffic monitoring** -- PPS, bandwidth (Gbps/Mbps), TCP/UDP/ICMP breakdown, unique source IPs, top destination ports, and average packet size. Every interval, printed to stdout.
 
-2. **Attack pattern detection** -- Classifies traffic severity against your threshold. When PPS exceeds the threshold, it flags the interval, shows top source IPs, and identifies the attack pattern.
+2. **Attack pattern detection** -- Classifies traffic severity against your threshold. When PPS exceeds the threshold it flags the interval, shows top source IPs, and identifies the attack pattern.
 
-| PPS vs threshold | Severity |
-|---|---|
-| Below threshold | `NORMAL` |
-| 1x threshold | `MEDIUM` |
-| 2x threshold | `HIGH` |
-| 5x threshold | `CRITICAL` |
+| PPS vs threshold | Severity   |
+| ---------------- | ---------- |
+| Below threshold  | `NORMAL`   |
+| 1x threshold     | `MEDIUM`   |
+| 2x threshold     | `HIGH`     |
+| 5x threshold     | `CRITICAL` |
 
-That's it. No config files. No daemons. No accounts. It starts capturing packets immediately and prints what it sees.
+No config files. No daemons. No accounts. It starts capturing packets immediately and prints what it sees.
 
 ---
 
@@ -102,7 +109,7 @@ sudo ftagent-lite --json | while read line; do
 done
 ```
 
-### JSON output
+### JSON Output
 
 Every interval emits one JSON object:
 
@@ -127,12 +134,12 @@ Every interval emits one JSON object:
 
 ---
 
-## Use cases
+## Use Cases
 
-- **Quick diagnostics** -- SSH into a server under attack and see what's hitting it in 2 seconds flat
-- **CI/CD pipelines** -- Run traffic tests against a staging server and assert PPS stays below a threshold
+- **Quick diagnostics** -- SSH into a server under attack and see what's hitting it in seconds
+- **CI/CD pipelines** -- Run traffic tests against staging and assert PPS stays below a threshold
 - **Custom tooling** -- Pipe JSON into your own alerting, dashboards, or SIEM
-- **Honeypots and research** -- Log all traffic patterns to JSONL for offline analysis
+- **Honeypots and research** -- Log traffic patterns to JSONL for offline analysis
 - **Lightweight monitoring** -- Leave it running on a small VPS where a full agent is overkill
 
 ---
@@ -141,33 +148,25 @@ Every interval emits one JSON object:
 
 - Python 3.7+
 - Linux (raw socket capture; macOS works with BPF)
-- Root/sudo for packet capture
+- Root / sudo for packet capture
 - `scapy` for full protocol analysis (recommended)
 - `psutil` as fallback (PPS/BPS only, no protocol breakdown)
 
 ---
 
-## When you need more
+## Need Production DDoS Protection?
 
-ftagent-lite is intentionally simple: two features, stdout output, zero dependencies on external services. If you need production DDoS detection, this is where it stops and [Flowtriq](https://flowtriq.com) picks up:
+ftagent-lite is intentionally simple: monitor and alert to stdout, nothing more. For teams that need auto-mitigation, multi-node visibility, and incident response, [Flowtriq](https://flowtriq.com) extends the same agent with:
 
-| Capability | ftagent-lite | [Flowtriq](https://flowtriq.com) |
-|---|---|---|
-| Real-time PPS / BPS | Yes | Yes |
-| Protocol breakdown | Yes | Yes |
-| Source IP tracking | Yes | Yes |
-| JSON stdout output | Yes | Yes |
-| Attack alerts (Slack, Discord, PagerDuty, Teams, Telegram, SMS, email) | -- | Yes |
-| PCAP forensic capture | -- | Yes |
-| Automatic attack classification (8 vector types) | -- | Yes |
-| Auto-mitigation (iptables, nftables, Cloudflare, BGP FlowSpec) | -- | Yes |
-| Multi-node cloud dashboard | -- | Yes |
-| Incident timeline and AI analysis | -- | Yes |
-| Team workspaces with RBAC | -- | Yes |
-| Unlimited team seats | -- | Yes |
-| White-label for MSPs / hosting | -- | Yes |
+- Attack alerts via Slack, Discord, PagerDuty, Teams, Telegram, SMS, and email
+- PCAP forensic capture on every incident
+- Automatic classification across 8 attack vector types
+- Auto-mitigation through iptables, nftables, Cloudflare, and BGP FlowSpec
+- Multi-node cloud dashboard with incident timelines
+- Team workspaces with RBAC and unlimited seats
+- White-label options for MSPs and hosting providers
 
-Flowtriq is $9.99/node/month with a [14-day free trial](https://flowtriq.com/signup). No credit card required.
+[Start a 14-day free trial](https://flowtriq.com/signup) -- no credit card required.
 
 ---
 
