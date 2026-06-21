@@ -167,6 +167,11 @@ ftagent-lite is intentionally simple: monitor and alert to stdout, nothing more.
 
 ---
 
+## Support
+
+- Discord: [discord.gg/SsTWMYuyGG](https://discord.gg/SsTWMYuyGG)
+- Issues: [github.com/Flowtriq/ftagent-lite/issues](https://github.com/Flowtriq/ftagent-lite/issues)
+
 ## Contributing
 
 Issues and PRs welcome. This is a single-file tool and we intend to keep it that way.
