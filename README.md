@@ -184,8 +184,18 @@ If you find a bug, please include:
 
 ---
 
+## Learn More
+
+- [ftagent-lite on GitHub](https://github.com/Flowtriq/ftagent-lite) - Source code, issues, and releases
+- [Start Free Trial](https://flowtriq.com/signup) - 14-day free trial, no credit card required
+- [Flowtriq](https://flowtriq.com) - Real-time DDoS detection and mitigation
+
 ## License
 
 MIT License. Copyright (c) 2026 [Flowtriq](https://flowtriq.com).
 
 Use it, fork it, ship it. Attribution appreciated but not required.
+
+---
+
+Built by [Flowtriq](https://flowtriq.com) - Real-time DDoS detection and mitigation.
